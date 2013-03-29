@@ -126,7 +126,7 @@
 % *** GRAPHICS RELATED PACKAGES ***
 %
 \ifCLASSINFOpdf
-  % \usepackage[pdftex]{graphicx}
+  \usepackage[pdftex]{graphicx}
   % declare the path(s) where your graphic files are
   % \graphicspath{{../pdf/}{../jpeg/}}
   % and their extensions so you won't have to specify these with
@@ -388,12 +388,18 @@
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
 
+\usepackage{listings}
+\usepackage[utf8]{inputenc}
+\lstset{ %
+  basicstyle=\footnotesize,           % the size of the fonts that are used for the code
+  numbers=left
+}
 
 \begin{document}
 %
 % paper title
 % can use linebreaks \\ within to get better formatting as desired
-\title{Bare Demo of IEEEtran.cls for Journals}
+\title{Visualizing Geo-tagged Data}
 %
 %
 % author names and IEEE memberships
@@ -405,7 +411,7 @@
 % was not built to handle multiple paragraphs
 %
 
-\author{Michael~Shell,~\IEEEmembership{Member,~IEEE,}
+\author{Ján~Vorčák,~\IEEEmembership{janvor@ifi.uio.no}
         John~Doe,~\IEEEmembership{Fellow,~OSA,}
         and~Jane~Doe,~\IEEEmembership{Life~Fellow,~IEEE}% <-this % stops a space
 \thanks{M. Shell is with the Department
@@ -617,6 +623,154 @@ Subsubsection text here.
 % Note that, LaTeX2e, unlike IEEE journals, places footnotes above bottom
 % floats. This can be corrected via the \fnbelowfloat command of the
 % stfloats package.
+
+\section{Getting data from the external APIs}
+
+After we download information about the objects nearby, we would like to know more about them and display more information from external sources like Wikipedia or Flickr.
+
+Our aim is to provide an interface capable of doing request for more external APIs. Interface will be implemented in Javascript and will use server support if needed.
+
+Javascript interface is illustrated in Listing~\ref{lst:jsinterface}.
+
+\begin{lstlisting}[caption={Javascript~interface~for~connecting~external~API},label={lst:jsinterface}]
+$.info.get = function (api_name, title,	parameters)
+\end{lstlisting}
+
+So in order to get Wikipedia content for object with name \textit{NameOfTheObject} you need to call code in Listing~\ref{lst:jsinterfaceexample}.
+
+\begin{lstlisting}[caption={Getting Wikipedia content},label={lst:jsinterfaceexample}]
+$.info.get("wikipedia", "NameOfTheObject")
+\end{lstlisting}
+
+In order to call Wikipedia API, we wanted to contact its API directly from the Javascript code. The first problem is that we are requesting data from different domain, so in order to avoid cross-domain problems we used \textit{JSONP} to get the data.
+
+After solving this issue, data we are getting are still in the Wikimedia format, which needs to be parsed by the client.
+
+At the end, we decided to have a support for the Wikipedia API on the server side, because we can use Python packages like \textit{wikitools} to work with Wikipedia API in a more elegant way.
+
+Data we gather from the APIs will be part of the tooltips visible in the video and on the map. For now we support Wikipedia API, but it's possible to easily add other APIs.
+
+Each API will have to be treated individually, some of them will require server support also because of the API keys, some of them will require caching of the data because of the API limitations. What we require from the future implementations is to follow the defined interface, so that developers can always rely on that kind of abstraction.
+
+\section{Displaying data in the video}
+
+Once we have all the data available locally in the web browser, it's time to visualize them on the video. 
+
+In the existing system, the HTML5 video tag is used for displaying the video content. The idea is to add HTML overlay over this video and display custom content there. This task thus consists of three different sub-tasks.
+
+	\begin{list}{•}{}
+		\item Overlaying HTML5 video tag
+		\item Filtering the places which are visible in the video
+		\item Displaying data in the video overlay
+	\end{list}
+
+\subsection{Overlaying HTML5 video tag}
+
+For this task we will just construct \textit{div} tag with id \textit{video-wrapper} with \textit{relative} positioning. This wrapper will contain two elements - video tag and another \textit{div} tag with id \textit{video-overlay}.
+
+Since video wrapper will have relative positioning, all we need is to make sure that video overlay has higher \textit{z-index} and we can add objects here which will be visible above the video tag.
+
+The only complication which can happen with this solution is bad behavior during fullscreen mode.
+
+If we want to make video fullscreen, we would loose the objects, because they are just placed in another layer. Solution is to use HTML5 \textit{requestFullscreen} function. If we want to make video fullscreen, we will need to call HTML5 \textit{requestFullscreen} function on the video wrapper element, since it contains both the video and the overlay. It's important to mention that \textit{requestFullscreen} function is only triggerable via user input (i.e. clicking the button), because of the security.
+
+\subsection{Filtering visible places}
+
+We have already fetched all the interesting information about objects nearby. If we want to now display them above the video, we need to know which objects are actually nearby or visible.
+
+If we know which places are nearby, we can display some tips in the video. For the objects that can be visible on the video, we will try to estimate their location in the video.
+
+In the objects fetched from the external API, we are provided with the coordinates of each object. Since we need to recalculate the current view every time we have moved in the video, we will create a function \textit{showPlacesOnTheVideo} which will be called from within already provided \textit{onVideoProgress} function.
+
+	This function is great place to do these kind of calculations, because it is called every time the video proceeds a new point on the map. Updating the view on the video in this interval is thus sufficient. If more precise calculations will be needed in the future, it is possible just to call \textit{showPlacesOnTheVideo} function more times using the timer.
+	
+	In the \textit{onVideoProgress} function, we are already provided with the current point and the next point we are about to reach. Now we know where are we located, our direction and places nearby.
+
+\paragraph{Getting the places nearby}
+
+In order to get all the nearby places, we need to iterate through them and check if 
+
+
+\begin{displaymath}
+abs(current.lon - place.lon) \leq r
+\end{displaymath}
+and
+\begin{displaymath}
+abs(current.lat - place.lat) \leq r
+\end{displaymath}
+
+ where \textit{current} is object containing our coordinates, \textit{place} is the object containing the coordinates of the place we are interested in and \textit{r} is a constant defining the acceptable difference for the coordinates, which is set to \textit{0.0009} by default.
+
+\paragraph{Getting the places in front of us}
+
+As seen on Figure~\ref{filtering}, we will know the coordinates of the current point and the point we are about to reach. What we want to count are points A, B, C and D. If we can calculate the positions of these points, we will be able to say that the object is in front of us, if it's located withing this rectangle.
+
+We will be also able to say whether an object is located on the right side of the video or the left side of the video, depending on which of the areas of the rectangle contains the object. We will be also able to return the distance from the object, which can be useful while rendering the object on the video.
+
+After recalculating, we will be able to say whether the object is located on the right or left side of the street and say how far away it is. Which should be sufficient for estimating its position within video overlay.
+
+        \begin{figure}[htb]
+         \centering
+         \includegraphics[width=200px]{filtering}
+         \caption{Calculating the places in front of us}
+         \label{filtering}
+        \end{figure}
+        
+In order to do this we need to first calculate vector of our direction vector.
+
+\begin{displaymath}
+CURRENT = [lat, lon]
+\end{displaymath}
+\begin{displaymath}
+NEXT = [lat, lon]
+\end{displaymath}
+\begin{displaymath}
+\vec{direction} = (CURRENT, NEXT)
+\end{displaymath}
+
+When we have the direction vector, we can calculate the normal vectors.
+
+\begin{displaymath}
+\vec{n1} = (-direction[1], direction[0])
+\end{displaymath}
+\begin{displaymath}
+\vec{n2} = (direction[1], -direction[0])
+\end{displaymath}
+
+If we add normal vectors to the points \textit{NEXT} and \textit{CURRENT} we can calculate the coordinates of \textit{A}, \textit{B}, \textit{C} and \textit{D}
+
+\begin{displaymath}
+A[0] = NEXT[0] + n1[0]*c
+\end{displaymath}
+\begin{displaymath}
+A[1] = NEXT[1] + n1[1]*c
+\end{displaymath}
+
+where \textit{c} is the constant specifying the width of our view.
+
+Once we have calculated all of the coordinates, we can say whether object we are trying to locate is within the range and if so we can analyze whether it is on the right side or left side of the view.
+
+Since we know the \textit{CURRENT} coordinates and coordinates of the video we can also return the distance of the objects from our current location.
+
+In case we want to specify wider or longer view range. We can move the NEXT point by adding the direction vector for longer range or we can specify higher \textit{c} constant for wider range.
+
+Constant \textit{c} is initially set to 1, which means that distance between points \textit{CURRENT} and \textit{NEXT} is the same as distance between points \textit{NEXT} and \textit{B}.
+
+\subsection{Displaying data in the video overlay}
+
+After we are done with calculations and we can say about each object whether it is located in front of us or not, we can start visualizing these elements on the video overlay.
+
+Properties we have determined for each object are it's distance, information whether it is on the right or left side of the street and other properties like name and type of the object we fetched from the external APIs.
+
+It is important to realize that video may have different dimensions so all of the positioning needs to be done in the relative way.
+
+We will set CSS \textit{float} attribute to \textit{left} or \textit{right} for all the objects depending on their positions and will set up their size and position depending on the distance of the object.
+
+Our assumption is that this system will be used mostly in streets so specifying that something is on the right side or the left side should be sufficient.
+
+
+
+
 
 
 
