@@ -439,8 +439,8 @@
 
 
 % The paper headers
-\markboth{Journal of \LaTeX\ Class Files,~Vol.~6, No.~1, January~2007}%
-{Shell \MakeLowercase{\textit{et al.}}: Bare Demo of IEEEtran.cls for Journals}
+%\markboth{Journal of \LaTeX\ Class Files,~Vol.~6, No.~1, January~2007}%
+%{Shell \MakeLowercase{\textit{et al.}}: Bare Demo of IEEEtran.cls for Journals}
 % The only time the second header will appear is for the odd numbered pages
 % after the title page when using the twoside option.
 % 
@@ -623,13 +623,13 @@ Subsubsection text here.
 % stfloats package.
 \section{Retrieving additional information}
 
-Since the purpose of this project is to visualize additional geo-referenced information towards a geo-tagged media file, it is necessary to enrich the given data with information. This will be done in two steps. First, we have to think about points we consider as relevant and that we want to receive. In the following, we will call these points “points of interest” (POI).  The second step is to get additional information from different data sources referring to the POI.
+Since the purpose of this project is to visualize additional geo-referenced information towards a geo-tagged media file, it is necessary to enrich the given data with information. This will be done in two steps. First, we have to think about points we consider as relevant and that we want to receive. In the following, we will call these points “points of interest” (POI).  The second step is to get additional information from different data sources referring to the POI. As a result, it is necessary to define an interface which provides additional information relating to the POI to the application. Ideally, the interface is able to request this information from different sources in different data and media types.
 
 \subsection{Points of interest}
 
-The given application uses OpenStreetMap (OSM) to visualize available tracks and the current position on the video. It suggests itself to use the available OSM API but according to its documentation, the API is dedicated for editing and not for downloading \cite{osmdata}. Mass requests tend to be resource intensive and since we respect the appeal, we use the suggested Overpass API to query for our POI.
+The given application uses OpenStreetMap (OSM) to visualize available tracks and the current position on the video. It suggests itself to use the available OSM API but according to its documentation, the API is dedicated for editing and not for downloading \cite{osmdata}. Mass requests tend to be resource intensive and since we want to respect this appeal, we use the suggested Overpass API to query for our POI.
 
-The Overpass API supports different Query languages like an XML query format and an own, more concise, query language \cite{overpass}. We recommend to build the queries in the XML format since it is more human readable. The resulting query can be transformed into a concise Overpass query using the given converter. The benefit of using the Overpass query is that it can be performed through a single HTTP request to the interpreter.
+The Overpass API supports different Query languages like an XML query format and an own, more concise, query language \cite{overpass}. We recommend to build the queries in the XML format since it is more human readable. The resulting query can be transformed into a concise Overpass query using the given converter. The benefit of using the Overpass query is that it can be performed through a single HTTP request to the interpreter. However, one should pay attention to the number of semicolons at the end of the query as we discovered a little bug due to this work.
 
 Since OSM represents everything with nodes and each node has to be defined by a key-value-pair \cite{osmfeature}, we query for our POI with these key-value-pairs according to a certain radius to our current position. 
 The current position is provided by the system with the method call and is needed to build a little bounding box to get the node of the current position from Overpass. Since the box is formed by only two coordinates, it represents the actual point we are looking for. Listing~\ref{lst:xmlquery} and Listing~\ref{lst:overpassquery} show the used query in the current project in XML format as well as in Overpass Query Language.
@@ -650,7 +650,9 @@ The current position is provided by the system with the method call and is neede
 \end{lstlisting}
 
 
-The query from Listing~\ref{lst:xmlquery} retrieves nodes with the key “historic” and every belonging value (e.g.: monuments, memorials, ruins or shrines) that are around a thousand meters from the Marketplace (G1) in Mannheim. The result will be delivered as a JSON object which will be passed on to other methods in the system that take care of displaying or getting further information. This query represents just a proof of concept but can be easily extended by appending further <query>-tags like in Listing~\ref{lst:xmlquery2}. Adding more elements, which can be considered as arguments in this case, into the same <query>-tag will have the same result as an AND-operator.
+The query from Listing~\ref{lst:xmlquery} retrieves nodes with the key “historic” and every belonging value (e.g.: monuments, memorials, ruins or shrines) that are around a thousand meters from the Marketplace (G1) in Mannheim. The result will be delivered as a JSON object which will be passed on to other methods in the system that take care of displaying or getting further information. This query represents just a proof of concept but can be easily extended by appending further <query>-tags like in Listing~\ref{lst:xmlquery2}. This query will have the same result as it would be concatenated with an OR-operator. Adding more elements, which can be considered as arguments in this case, into the same <query>-tag will have the same result as an AND-operator.
+
+The Overpass API offers much more possibilities like membership relations between nodes, regular expressions within key-value pairs and unions between queries. Since we consider the explained functions as sufficient to get all interesting geographical points near a given position, we will not go into detail with these sophisticated functions as this is not an introduction to the Overpass API.
 
 \begin{lstlisting}[caption={Enhanced~Overpass~query~in~XML~format},label={lst:xmlquery2}]
 <osm-script output="json">
@@ -699,7 +701,7 @@ Each API will have to be treated individually, some of them will require server 
 
 \section{Map Displaying}
 
-This part drafts how the system displays points of interest on the map. It was not sufficient enough to implement a method that adds markers to the map as changes to the core of the system were needed. First of all, it was necessary to add another layer for the markers that should be drawn by the OpenLayers API. Furthermore the depth of this layer had to be set, so a popup would appear after a mouseover on the marker.
+This part drafts how the system displays points of interest on the map. It was not sufficient enough to implement a method that adds markers to the map as changes to the core of the system were needed. First of all, it was necessary to add another layer for the markers that should be drawn by the OpenLayers API. Furthermore the depth of this layer had to be set, so a popup would appear after a mouseover on the marker. If the Layer is not correctly initialized, the application will not recognize any motion on this layer.
 
 As these changes were performed, the marker drawing function \textit{setMarker} could be implemented. This function is called from the success function of the performed AJAX call in \textit{onVideoProgress} after the POIs were received from the Overpass API. The points the system is interested in are stored in a JSON object. This object will be iterated to get the longitude, the latitude and the name. These are the parameters that are required to create and set a marker with an associated popup. Afterwards the method adds an event to the popup in case the mouse moves over the marker.
 
