@@ -411,9 +411,9 @@
 % was not built to handle multiple paragraphs
 %
 
-\author{Ján~Vorčák,~\IEEEmembership{janvor@ifi.uio.no}
-
-        Matthäus~Skiba,~\IEEEmembership{mskiba@mail.uni-mannheim.de}
+\author{J\'{a}n~Vor\u{c}\'{a}k~\IEEEmembership{janvor@ifi.uio.no},
+	Frode~Tobias~Bjerke~\IEEEmembership{frodetbj@ifi.uio.no},
+        Matth\"{a}us~Skiba~\IEEEmembership{mskiba@mail.uni-mannheim.de}
         % <-this % stops a space
         
         }
@@ -503,7 +503,7 @@ Geotagging, Interactive Video Tour, Video Navigation.
 
 
 
-\section{Introduction}
+\section{DUMMY}
 % The very first letter is a 2 line initial drop letter followed
 % by the rest of the first word in caps.
 % 
@@ -530,13 +530,13 @@ I wish you the best of success.
  
 \hfill January 11, 2007
 
-\subsection{Subsection Heading Here}
+\subsection{DUMMY subsection}
 Subsection text here.
 
 % needed in second column of first page if using \IEEEpubid
 %\IEEEpubidadjcol
 
-\subsubsection{Subsubsection Heading Here}
+\subsubsection{Dummy subsubsection}
 Subsubsection text here.
 
 
@@ -621,6 +621,23 @@ Subsubsection text here.
 % Note that, LaTeX2e, unlike IEEE journals, places footnotes above bottom
 % floats. This can be corrected via the \fnbelowfloat command of the
 % stfloats package.
+\section{Introduction}
+
+\section{Related work}
+Luo et al\cite{geotagging-survey} propose to split geotagged multimedia into four different modalities: points of interest geographical databases, aerial image databases, unstructured geo-referenced web resources and collection of geo-referenced multimedia. 
+
+Sources serving data from the Points of interest geographical databases modality are often of high reliability and provides data on things like landmarks, shops and other points of interest. Interesting sources for such data could be OpenStreetMap Overpass API\cite{overpass} and Geonames\cite{geonames}. 
+
+Aerial images covering the earth has been knit together into great interactive services such as Google Earth\cite{google-earth}. This kind of imagery can cover large areas and are good at visualizing larger areas of land. 
+
+Unstructured geo-referenced web resources could come from websites, news, blogs, wikis or social networks. This is a very diverse modality where data could belong to any number of different modalities. A great strength of this modality however how diverse is presenting live information on events or major happenings. Data is often provided by non-experts and could come in tremendous volumes, this is certainly the fact for social networks; Hence, data in this modality could be noisy and lack of objectivity. Therefore, heavy pre-processing is often required to present reasonable results. Some major resources here are Twitter\cite{twitter} and Facebook\cite{facebook}. 
+
+Treating geo-refenced multimedia as collections as opposed to single pieces. There have specially been done a lot of work on geo-referenced images. Images on large photo-sharing services include metadata such as tags, likes and comments; Data mining techniques can therefore be applied to aggregate interesting information on locations and areas.
+
+Spyrou and Mylonas\cite{placing-meta-on-map}, and Kisilevich et al\cite{next-vacation} worked with the geo-referenced multimedia as collection modality. A image source they used was for example Flickr\cite{flickr}. Spyrou and Mylonas' work focused on finding the most relevant tags for an area represented by a cluster of images. Tags are usually user-created and therefore of varying quality, in their work they proposed a tag-ranking model that would find the most descriptive tags for a given area. Kisilevich et al's work on the other hand focused on locating and visualizing what they referred to as attractive places. They located areas by image-clusters before applying methods of analyzing their attractiveness. Among their techniques to find the best places they considered the popularity of the pictures in a cluster.
+
+Chippendale et al\cite{collective-photography} worked cross modalities, what they did was showing ways to explore and organize photos. Two of the more interesting things they present in their work are augmenting photos with any other form of geo-tagged data and photo alignment. In augmenting photos they added markers as form of an icon representing the source. Sources could be anything geo-tagged such as news, other photos or videos. In one example they had a picture overlooking a valley which had been augmented with YouTube icons on different locations in the valley. Each Icon indicated a position where a YouTube video was geo-tagged. To help show the position of the YouTube video in the image, the icons representing each video had different sizes according to the distance from where original image was taken.
+
 \section{Retrieving additional information}
 
 Since the purpose of this project is to visualize additional geo-referenced information towards a geo-tagged media file, it is necessary to enrich the given data with information. This will be done in two steps. First, we have to think about points we consider as relevant and that we want to receive. In the following, we will call these points “points of interest” (POI).  The second step is to get additional information from different data sources referring to the POI. As a result, it is necessary to define an interface which provides additional information relating to the POI to the application. Ideally, the interface is able to request this information from different sources in different data and media types.
@@ -629,7 +646,7 @@ Since the purpose of this project is to visualize additional geo-referenced info
 
 The given application uses OpenStreetMap (OSM) to visualize available tracks and the current position on the video. It suggests itself to use the available OSM API but according to its documentation, the API is dedicated for editing and not for downloading \cite{osmdata}. Mass requests tend to be resource intensive and since we want to respect this appeal, we use the suggested Overpass API to query for our POI.
 
-The Overpass API supports different Query languages like an XML query format and an own, more concise, query language \cite{overpass}. We recommend to build the queries in the XML format since it is more human readable. The resulting query can be transformed into a concise Overpass query using the given converter. The benefit of using the Overpass query is that it can be performed through a single HTTP request to the interpreter. However, one should pay attention to the number of semicolons at the end of the query as we discovered a little bug due to this work.
+The Overpass API supports different Query languages like an XML query format and an own, more concise, query language \cite{overpass-lang}. We recommend to build the queries in the XML format since it is more human readable. The resulting query can be transformed into a concise Overpass query using the given converter. The benefit of using the Overpass query is that it can be performed through a single HTTP request to the interpreter. However, one should pay attention to the number of semicolons at the end of the query as we discovered a little bug due to this work.
 
 Since OSM represents everything with nodes and each node has to be defined by a key-value-pair \cite{osmfeature}, we query for our POI with these key-value-pairs according to a certain radius to our current position. 
 The current position is provided by the system with the method call and is needed to build a little bounding box to get the node of the current position from Overpass. Since the box is formed by only two coordinates, it represents the actual point we are looking for. Listing~\ref{lst:xmlquery} and Listing~\ref{lst:overpassquery} show the used query in the current project in XML format as well as in Overpass Query Language.
@@ -824,10 +841,7 @@ We will set CSS \textit{float} attribute to \textit{left} or \textit{right} for 
 
 Our assumption is that this system will be used mostly in streets so specifying that something is on the right side or the left side should be sufficient.
 
-
-
-
-
+\section{Evaluation}
 
 
 \section{Conclusion}
@@ -909,8 +923,44 @@ The authors would like to thank...
 \bibitem{osmfeature}
 (2013, Apr.) OpenStreetMap wiki about the tagging system. [Online]. Available: \url{http://wiki.openstreetmap.org/wiki/Map_Features}
 
-\bibitem{overpass}
+\bibitem{overpass-lang}
 (2013, Apr.) Overpass API language guide. [Online]. Available: \url{http://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide}
+
+\bibitem{flickr}
+(2013, Apr.) Flickr. \url{http://www.flickr.com/}
+
+\bibitem{youtube}
+(2013, Apr.) YouTube. \url{http://www.youtube.com/}
+
+\bibitem{foursquare}
+(2013, Apr.) Foursqaure. \url{http://www.foursquare.com/}
+
+\bibitem{overpass}
+(2013, Apr.) OpenStreetMap Overpass API. \url{http://wiki.openstreetmap.org/wiki/Overpass_API}
+
+\bibitem{placing-meta-on-map}
+Spyrou, E., and Mylonas, P. (2011, December). Placing User-Generated Photo Metadata on a Map. In Semantic Media Adaptation and Personalization (SMAP), 2011 Sixth International Workshop on (pp. 79-84). IEEE.
+
+\bibitem{geotagging-survey}
+Luo, J., Joshi, D., Yu, J., and Gallagher, A. (2011). Geotagging in multimedia and computer vision?a survey. Multimedia Tools and Applications, 51(1), 187-211.
+
+\bibitem{geonames}
+(2013, Apr.) Geonames. \url{http://www.geonames.org/}
+
+\bibitem{next-vacation}
+Kisilevich, S., Mansmann, F., Bak, P., Keim, D., and Tchaikin, A. (2010, February). Where would you go on your next vacation? A framework for visual exploration of attractive places. In Advanced Geographic Information Systems, Applications, and Services (GEOPROCESSING), 2010 Second International Conference on (pp. 21-26). IEEE.
+
+\bibitem{collective-photography}
+Chippendale, P., Zanin, M., and Andreatta, C. (2009, November). Collective photography. In Visual Media Production, 2009. CVMP'09. Conference for (pp. 188-194). IEEE.
+
+\bibitem{google-earth}
+(2013, Apr.) Google Earth. \url{http://www.google.com/earth/index.html}
+
+\bibitem{twitter}
+(2013, Apr.) Twitter. \url{http://www.twitter.com}
+
+\bibitem{facebook}
+(2013, Apr.) Facebook. \url{http://www.facebook.com}
 
 \end{thebibliography}
 
