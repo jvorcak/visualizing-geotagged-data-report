@@ -640,13 +640,27 @@ Spyrou and Mylonas\cite{placing-meta-on-map}, and Kisilevich et al\cite{next-vac
 
 Chippendale et al\cite{collective-photography} worked cross modalities, what they did was showing ways to explore and organize photos. Two of the more interesting things they present in their work are augmenting photos with any other form of geo-tagged data and photo alignment. In augmenting photos they added markers as form of an icon representing the source. Sources could be anything geo-tagged such as news, other photos or videos. In one example they had a picture overlooking a valley which had been augmented with YouTube icons on different locations in the valley. Each Icon indicated a position where a YouTube video was geo-tagged. To help show the position of the YouTube video in the image, the icons representing each video had different sizes according to the distance from where original image was taken.
 
-\section{Retrieving additional information}
+\section{Design}
+Our task is to enrich an already existing system\cite{originalsystem} with geo-tagged multimedia. The existing system, as seen in figure~\ref{original-app}, visualizes geo-tagged video according to position rather than time. It works by users uploading geo-tagged video. By geo-tagged in this specific context it means that the video is accompanied with location data, the location data tells which location the camera is at throughout the video. In the web application videos can then be navigated by a map, where the tracks of each video is visualized.
 
-Since the purpose of this project is to visualize additional geo-referenced information towards a geo-tagged media file, it is necessary to enrich the given data with information. This will be done in two steps. First, we have to think about points we consider as relevant and that we want to receive. In the following, we will call these points ``points of interest'' (POI).  The second step is to get additional information from different data sources referring to the POI. As a result, it is necessary to define an interface which provides additional information relating to the POI to the application. Ideally, the interface is able to request this information from different sources in different data and media types.
+        \begin{figure}[htb]
+         \centering
+         \includegraphics[width=200px]{app_small}
+         \caption{Screenshot of original application. Retrieved from \cite{originalsystem}.}
+         \label{original-app}
+        \end{figure}
 
-\subsection{Points of interest}
+We have two main goals we want to achieve with our design. First, visualize points of interest on the map. There should be ways to find relevant information on a point of interest in the application. Secondly, the points of interest should show up on the videos. Such that when a video-clip passes a certain building which is marked as a point of interest a label indicating what point of interest the given building is. 
 
-The given application uses OpenStreetMap (OSM) to visualize available tracks and the current position on the video. It suggests itself to use the available OSM API but according to its documentation, the API is dedicated for editing and not for downloading \cite{osmdata}. Mass requests tend to be resource intensive and since we want to respect this appeal, we use the suggested Overpass API to query for our POI.
+Regarding finding points of interest this will be done in two steps. First, we have to think about points we consider as relevant and that we want to receive. In the following, we will call these points of interest for POI.  The second step is to get additional information from different data sources referring to the POI. As a result, it is necessary to define an interface which provides additional information relating to the POI to the application. Ideally, the interface is able to request this information from different sources in different data and media types.
+
+In the video, the same POIs as in the map should be visualized when they are in close proximity in front of the camera. The position of a POI should be indicated by if it is shown on the left or the right side of the video. Additionally the distance to the POI can be shown by changing the size of the indicator.
+
+\section{Implementation}
+
+\subsection{Finding points of interest}
+
+The given existing application uses OpenStreetMap (OSM) to visualize available tracks and the current position on the video. It suggests itself to use the available OSM API but according to its documentation, the API is dedicated for editing and not for downloading \cite{osmdata}. Mass requests tend to be resource intensive and since we want to respect this appeal, we use the suggested Overpass API to query for our POI.
 
 The Overpass API supports different Query languages like an XML query format and an own, more concise, query language \cite{overpass-lang}. We recommend to build the queries in the XML format since it is more human readable. The resulting query can be transformed into a concise Overpass query using the given converter. The benefit of using the Overpass query is that it can be performed through a single HTTP request to the interpreter. However, one should pay attention to the number of semicolons at the end of the query as we discovered a little bug due to this work.
 
@@ -690,7 +704,7 @@ The Overpass API offers much more possibilities like membership relations betwee
 \end{lstlisting}
 
 
-\subsection{Getting data from the external APIs}
+\subsection{Add data to points of interest}
 
 After we download information about the objects nearby, we would like to know more about them and display more information from external sources like Wikipedia or Flickr.
 
@@ -718,16 +732,16 @@ Data we gather from the APIs will be part of the tooltips visible in the video a
 
 Each API will have to be treated individually, some of them will require server support also because of the API keys, some of them will require caching of the data because of the API limitations. What we require from the future implementations is to follow the defined interface, so that developers can always rely on that kind of abstraction.
 
-\section{Map Displaying}
+\subsection{Displaying POIs on the map}
 
-This part drafts how the system displays points of interest on the map. It was not sufficient enough to implement a method that adds markers to the map as changes to the core of the system were needed. First of all, it was necessary to add another layer for the markers that should be drawn by the OpenLayers API. Furthermore the depth of this layer had to be set, so a popup would appear after a mouseover on the marker. If the Layer is not correctly initialized, the application will not recognize any motion on this layer.
+This part drafts how the system displays points of interest on the map. It was not sufficient enough to implement a method that adds markers to the map as changes to the core of the system were needed. First of all, it was necessary to add another layer for the markers that should be drawn by the OpenLayers API. Furthermore the depth of this layer had to be set, so a popup would appear after a click on the marker. If the Layer is not correctly initialized, the application will not recognize any motion on this layer.
 
 As these changes were performed, the marker drawing function \textit{setMarker} could be implemented. This function is called from the success function of the performed AJAX call in \textit{onVideoProgress} after the POIs were received from the Overpass API. The points the system is interested in are stored in a JSON object. This object will be iterated to get the longitude, the latitude and the name. These are the parameters that are required to create and set a marker with an associated popup. Afterwards the method adds an event to the popup in case the mouse moves over the marker.
 
 All in all, after the core of the system has been modified, markers can be added to the map very easily. However, the documentation of the OpenLayers API is very poor. This fact turned this easy looking part of displaying markers on a map into a real challenge.
 
 
-\section{Displaying data in the video}
+\subsection{Displaying POIs in the video}
 
 Once we have all the data available locally in the web browser, it's time to visualize them on the video. 
 
@@ -739,7 +753,7 @@ In the existing system, the HTML5 video tag is used for displaying the video con
 		\item Displaying data in the video overlay
 	\end{list}
 
-\subsection{Overlaying HTML5 video tag}
+\subsubsection{Overlaying HTML5 video tag}
 
 For this task we will just construct \textit{div} tag with id \textit{video-wrapper} with \textit{relative} positioning. This wrapper will contain two elements - video tag and another \textit{div} tag with id \textit{video-overlay}.
 
@@ -749,7 +763,7 @@ The only complication which can happen with this solution is bad behavior during
 
 If we want to make video fullscreen, we would loose the objects, because they are just placed in another layer. Solution is to use HTML5 \textit{requestFullscreen} function. If we want to make video fullscreen, we will need to call HTML5 \textit{requestFullscreen} function on the video wrapper element, since it contains both the video and the overlay. It's important to mention that \textit{requestFullscreen} function is only triggerable via user input (i.e. clicking the button), because of the security.
 
-\subsection{Filtering visible places}
+\subsubsection{Filtering visible places}
 
 We have already fetched all the interesting information about objects nearby. If we want to now display them above the video, we need to know which objects are actually nearby or visible.
 
@@ -831,7 +845,7 @@ In case we want to specify wider or longer view range. We can move the NEXT poin
 
 Constant \textit{c} is initially set to 1, which means that distance between points \textit{CURRENT} and \textit{NEXT} is the same as distance between points \textit{NEXT} and \textit{B}.
 
-\subsection{Displaying data in the video overlay}
+\subsubsection{Displaying data in the video overlay}
 
 After we are done with calculations and we can say about each object whether it is located in front of us or not, we can start visualizing these elements on the video overlay.
 
@@ -983,7 +997,12 @@ Chippendale, P., Zanin, M., and Andreatta, C. (2009, November). Collective photo
 \bibitem{facebook}
 (2013, Apr.) Facebook. \url{http://www.facebook.com}
 
+\bibitem{originalsystem}
+http://ls.wim.uni-mannheim.de/de/pi4/research/projects/geotagged-videos
+
 \bibitem{wikiapi}
+
+
 
 \end{thebibliography}
 
