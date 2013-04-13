@@ -473,8 +473,9 @@
 
 
 \begin{abstract}
-%\boldmath
-The abstract goes here.
+The thirst for knowledge nowadays motivates people to search the internet for different systems to satisfy their demand. Google Maps, Google Street View or Flickr are used to get impressions of a specific region whereas Wikipedia can deliver the appropriate facts. However, the user has to utilize at least two systems. Furthermore, he has to search for additional information on his own.
+
+In this paper, we describe how we extended a system that creates interactive video tours by combining videos with location data. We show how relevant nodes can be identified and how additional information about these points can be retrieved. Furthermore, we describe how this information can be displayed by the system.
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
 % This preserves the distinction between vectors and scalars. However,
@@ -624,6 +625,14 @@ Geotagging, Interactive Video Tour, Video Navigation.
 % floats. This can be corrected via the \fnbelowfloat command of the
 % stfloats package.
 \section{Introduction}
+Almost all of us have experienced this situation: You want to visit a city or you have an appointment in a part of a city you are not familiar with. It becomes more and more popular to have a look at Google Maps to plan your route or to check up the surroundings at Google Street View. Even tagged photos on Flickr will be consulted to improve the estimation of the environment. Furthermore, it happens that the user wants more specific information about points of his interest. For sure, he can search for further information on his own but this is still related to some effort. Imagine the user sees a statue on Google Street View in a city he wants to visit. How should he get further information about this statue, since he has to know at least a correct spelled name? He also might be interested in places or points within his surrounding, although he cannot see them from his actual position or as he even might be unaware about their existence.
+
+It is desirable to have a system that can fulfill the above needs. It should show routes, the environment as well as interesting points in the surrounded area. Information about these points shall also be included. Therefore, the system has to be aware of the current position, so it can query for additional points and information.
+
+Since we try to implement such a system, we will build up on a system, which creates interactive video tours. The described system combines videos with location data. A nice side-effect is that videos carry more information than pictures. Furthermore, it provides the current position since it is necessary to navigate through the video or rather through the path. With this information we are able to query available databases for nearby points and their entities. Since such databases exist, it is not necessary to create one by ourselves. This would be a not manageable task.
+
+The contribution of this work is to show how points of interest can be found towards the current position and how information according to these points can be retrieved and visualized.
+
 
 \section{Related work}
 Luo et al\cite{geotagging-survey} propose to split geotagged multimedia into four different modalities: points of interest geographical databases, aerial image databases, unstructured geo-referenced web resources and collection of geo-referenced multimedia. 
@@ -645,7 +654,7 @@ Our task is to enrich an already existing system\cite{originalsystem} with geo-t
 
         \begin{figure}[htb]
          \centering
-         \includegraphics[width=200px]{app_small}
+%         \includegraphics[width=200px]{apcp_small}
          \caption{Screenshot of original application. Retrieved from \cite{originalsystem}.}
          \label{original-app}
         \end{figure}
@@ -698,6 +707,11 @@ The Overpass API offers much more possibilities like membership relations betwee
   <query type="node">
     <around radius="1000"/>
     <has-kv k="leisure" v="park"/>
+  </query>
+  <print/>
+  <query type="node">
+    <around radius="1000"/>
+    <has-kv k="amenity" v="theatre"/>
   </query>
   <print/>
 </osm-script>
