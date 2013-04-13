@@ -859,7 +859,10 @@ Our assumption is that this system will be used mostly in streets so specifying 
 
 \section{Evaluation}
 
-\subsection{Points of interest and language}
+\subsection{Historical locations marked on the map}
+For our evaluation our POI finder was only configured to find historical locations. Every POI found inside a preset radius of our location was displayed neatly on the map with markers. Intuitively, as seen from other interactive map services like Google Maps\cite{google-maps}, clicking the marker would show whatever information we had gathered about the location in a popup. A problem we encountered however was that at some locations there could be several POIs in very close proximity or on eachother. Solving how to visualize all the different POIs is something that should be examined in further work. The information we gathered about a location for this evaluation was only the Wikipedia entry found by querying the name of the POI. As the system was configured to only show one popup at the time, the screen never became cluttered with popups. A popup could easily be closed by a close button in the top right corner, indicated by a red x-icon.
+
+\subsection{Language issues on historical locations}
 
         \begin{figure}[htb]
          \centering
@@ -877,6 +880,9 @@ We tested our system with videos from Mannheim in Germany. When querying for his
          \caption{Point of interest popup where no english Wikipedia content was found.}
          \label{popup_wo_content}
         \end{figure}
+
+\subsection{The POI indicators on videos}
+\subsection{Lack of images}
 
 
 \section{Conclusion}
