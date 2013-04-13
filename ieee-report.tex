@@ -642,7 +642,7 @@ Chippendale et al\cite{collective-photography} worked cross modalities, what the
 
 \section{Retrieving additional information}
 
-Since the purpose of this project is to visualize additional geo-referenced information towards a geo-tagged media file, it is necessary to enrich the given data with information. This will be done in two steps. First, we have to think about points we consider as relevant and that we want to receive. In the following, we will call these points “points of interest” (POI).  The second step is to get additional information from different data sources referring to the POI. As a result, it is necessary to define an interface which provides additional information relating to the POI to the application. Ideally, the interface is able to request this information from different sources in different data and media types.
+Since the purpose of this project is to visualize additional geo-referenced information towards a geo-tagged media file, it is necessary to enrich the given data with information. This will be done in two steps. First, we have to think about points we consider as relevant and that we want to receive. In the following, we will call these points ``points of interest'' (POI).  The second step is to get additional information from different data sources referring to the POI. As a result, it is necessary to define an interface which provides additional information relating to the POI to the application. Ideally, the interface is able to request this information from different sources in different data and media types.
 
 \subsection{Points of interest}
 
@@ -669,7 +669,7 @@ The current position is provided by the system with the method call and is neede
 \end{lstlisting}
 
 
-The query from Listing~\ref{lst:xmlquery} retrieves nodes with the key “historic” and every belonging value (e.g.: monuments, memorials, ruins or shrines) that are around a thousand meters from the Marketplace (G1) in Mannheim. The result will be delivered as a JSON object which will be passed on to other methods in the system that take care of displaying or getting further information. This query represents just a proof of concept but can be easily extended by appending further <query>-tags like in Listing~\ref{lst:xmlquery2}. This query will have the same result as it would be concatenated with an OR-operator. Adding more elements, which can be considered as arguments in this case, into the same <query>-tag will have the same result as an AND-operator.
+The query from Listing~\ref{lst:xmlquery} retrieves nodes with the key ``historic'' and every belonging value (e.g.: monuments, memorials, ruins or shrines) that are around a thousand meters from the Marketplace (G1) in Mannheim. The result will be delivered as a JSON object which will be passed on to other methods in the system that take care of displaying or getting further information. This query represents just a proof of concept but can be easily extended by appending further <query>-tags like in Listing~\ref{lst:xmlquery2}. This query will have the same result as it would be concatenated with an OR-operator. Adding more elements, which can be considered as arguments in this case, into the same <query>-tag will have the same result as an AND-operator.
 
 The Overpass API offers much more possibilities like membership relations between nodes, regular expressions within key-value pairs and unions between queries. Since we consider the explained functions as sufficient to get all interesting geographical points near a given position, we will not go into detail with these sophisticated functions as this is not an introduction to the Overpass API.
 
@@ -733,7 +733,7 @@ Once we have all the data available locally in the web browser, it's time to vis
 
 In the existing system, the HTML5 video tag is used for displaying the video content. The idea is to add HTML overlay over this video and display custom content there. This task thus consists of three different sub-tasks.
 
-	\begin{list}{•}{}
+	\begin{list}{\textbullet}{}
 		\item Overlaying HTML5 video tag
 		\item Filtering the places which are visible in the video
 		\item Displaying data in the video overlay
@@ -844,6 +844,25 @@ We will set CSS \textit{float} attribute to \textit{left} or \textit{right} for 
 Our assumption is that this system will be used mostly in streets so specifying that something is on the right side or the left side should be sufficient.
 
 \section{Evaluation}
+
+\subsection{Points of interest and language}
+
+        \begin{figure}[htb]
+         \centering
+         \includegraphics[width=200px]{popup_with_content}
+         \caption{Point of interest popup with english Wikipedia content.}
+         \label{popup_with_content}
+        \end{figure}
+
+
+We tested our system with videos from Mannheim in Germany. When querying for historical points of interest from Overpass\cite{overpass} our result set consisted of only german names for places. When displaying information in popups on the map we combine the name from points of interest with text retrieved from Wikipedia API\cite{wikiapi}. Wikipedia was queried by using the name of the point of interest. Figure~\ref{popup_with_content} show a popup where english Wikipedia content was found. As the names of the points of interest where in german and we query the english Wikipedia we rarely got any hits. Figure~\ref{popup_with_content} was actually one of the very few points of interest with english wikipedia content. Figure~\ref{popup_wo_content} displays a popup where there was not found any Wikipedia information.
+
+        \begin{figure}[htb]
+         \centering
+         \includegraphics[width=200px]{popup_wo_content}
+         \caption{Point of interest popup where no english Wikipedia content was found.}
+         \label{popup_wo_content}
+        \end{figure}
 
 
 \section{Conclusion}
@@ -963,6 +982,8 @@ Chippendale, P., Zanin, M., and Andreatta, C. (2009, November). Collective photo
 
 \bibitem{facebook}
 (2013, Apr.) Facebook. \url{http://www.facebook.com}
+
+\bibitem{wikiapi}
 
 \end{thebibliography}
 
