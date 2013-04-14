@@ -874,7 +874,7 @@ Our assumption is that this system will be used mostly in streets so specifying 
 \section{Evaluation}
 
 \subsection{Historical locations marked on the map}
-For our evaluation our POI finder was only configured to find historical locations. Every POI found inside a preset radius of our location was displayed neatly on the map with markers. Intuitively, as seen from other interactive map services like Google Maps\cite{google-maps}, clicking the marker would show whatever information we had gathered about the location in a popup. A problem we encountered however was that at some locations there could be several POIs in very close proximity or on eachother. Solving how to visualize all the different POIs is something that should be examined in further work. The information we gathered about a location for this evaluation was only the Wikipedia entry found by querying the name of the POI. As the system was configured to only show one popup at the time, the screen never became cluttered with popups. A popup could easily be closed by a close button in the top right corner, indicated by a red x-icon.
+For our evaluation our POI finder was only configured to find historical locations. Every POI found inside a preset radius of our location was displayed neatly on the map with markers. Intuitively, as seen from other interactive map services like Google Maps~\cite{google-maps}, clicking the marker would show whatever information we had gathered about the location in a popup. A problem we encountered however was that at some locations there could be several POIs in very close proximity or on eachother. Solving how to visualize all the different POIs is something that should be examined in further work. The information we gathered about a location for this evaluation was only the Wikipedia entry found by querying the name of the POI. As the system was configured to only show one popup at the time, the screen never became cluttered with popups. A popup could easily be closed by a close button in the top right corner, indicated by a red x-icon.
 
 \subsection{Language issues on historical locations}
 
@@ -896,6 +896,26 @@ We tested our system with videos from Mannheim in Germany. When querying for his
         \end{figure}
 
 \subsection{The POI indicators on videos}
+
+For the evaluation of displaying content above the video, we used the historical locations fetched from OpenStreetMap Overpass API~\cite{overpass}.
+
+	   \begin{figure}[htb]
+         \centering
+         \includegraphics[width=200px]{video_with_info}
+         \caption{Example of the content displayed in the HTML5 video}
+         \label{video_with_info}
+        \end{figure}
+
+	In the scenario visible in Figure~\ref{video_with_info}, there are several routes where we could find historical locations on our way. We choosed all the possible routes from this scenario and we found out that we are notified with the relevant alert above the video layer in case interesting venue is nearby.
+
+	In addition, the location of the venue is estimated using the hint whether the object is located on the right or the left side of the street.
+	
+	The hints are added and removed from the video dynamically, so we are notified about the objects currently visible in the video.
+	
+	Figure~\ref{video_with_info} illustrates an example of the interesting historical venue near our current location.
+
+	In case of more venues are visible on the video, we are notified with several alerts above the video layer on both sides.
+
 \subsection{Lack of images}
 
 
@@ -1010,6 +1030,9 @@ Chippendale, P., Zanin, M., and Andreatta, C. (2009, November). Collective photo
 
 \bibitem{google-earth}
 (2013, Apr.) Google Earth. \url{http://www.google.com/earth/index.html}
+
+\bibitem{google-maps}
+(2013, Apr.) Google Maps. \url{http://maps.google.com/}
 
 \bibitem{twitter}
 (2013, Apr.) Twitter. \url{http://www.twitter.com}
