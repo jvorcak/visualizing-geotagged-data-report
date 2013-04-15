@@ -633,6 +633,8 @@ Since we try to implement such a system, we will build up on a system, which cre
 
 The contribution of this work is to show how points of interest can be found towards the current position and how information according to these points can be retrieved and visualized.
 
+This report is structured as follows. Related works shows some work that is done on geo-tagged multimedia, geo-tagged multimedia also gets classified. Design we talk about how we envision our solution. Implementation we talk about how we implemented our design and comment on some issues we had. In the evaluation chapter we further comment on aspects of our solution. The evaluation will only comment on the features we have added to the existing system. Last, we conclude our work in the conclusion chapter.
+
 
 \section{Related work}
 Luo et al\cite{geotagging-survey} propose to split geotagged multimedia into four different modalities: points of interest geographical databases, aerial image databases, unstructured geo-referenced web resources and collection of geo-referenced multimedia. 
@@ -652,12 +654,12 @@ Chippendale et al\cite{collective-photography} worked cross modalities, what the
 \section{Design}
 Our task is to enrich an already existing system\cite{originalsystem} with geo-tagged multimedia. The existing system, as seen in figure~\ref{original-app}, visualizes geo-tagged video according to position rather than time. It works by users uploading geo-tagged video. By geo-tagged in this specific context it means that the video is accompanied with location data, the location data tells which location the camera is at throughout the video. In the web application videos can then be navigated by a map, where the tracks of each video is visualized.
 
-        \begin{figure}[htb]
+        \begin{figure*}[htb]
          \centering
-%         \includegraphics[width=200px]{apcp_small}
+	 \includegraphics[width=400px]{app_small}
          \caption{Screenshot of original application. Retrieved from \cite{originalsystem}.}
          \label{original-app}
-        \end{figure}
+        \end{figure*}
 
 We have two main goals we want to achieve with our design. First, visualize points of interest on the map. There should be ways to find relevant information on a point of interest in the application. Secondly, the points of interest should show up on the videos. Such that when a video-clip passes a certain building which is marked as a point of interest a label indicating what point of interest the given building is. 
 
