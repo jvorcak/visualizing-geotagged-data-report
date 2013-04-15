@@ -633,31 +633,33 @@ Since we try to implement such a system, we will build up on a system, which cre
 
 The contribution of this work is to show how points of interest can be found towards the current position and how information according to these points can be retrieved and visualized.
 
+This report is structured as follows. Related works shows some work that is done on geo-tagged multimedia, geo-tagged multimedia also gets classified. Design we talk about how we envision our solution. Implementation we talk about how we implemented our design and comment on some issues we had. In the evaluation chapter we further comment on aspects of our solution. The evaluation will only comment on the features we have added to the existing system. Last, we conclude our work in the conclusion chapter.
+
 
 \section{Related work}
 Luo et al\cite{geotagging-survey} propose to split geotagged multimedia into four different modalities: points of interest geographical databases, aerial image databases, unstructured geo-referenced web resources and collection of geo-referenced multimedia. 
 
-Sources serving data from the Points of interest geographical databases modality are often of high reliability and provides data on things like landmarks, shops and other points of interest. Interesting sources for such data could be OpenStreetMap Overpass API\cite{overpass} and Geonames\cite{geonames}. 
+Sources serving data from the points of interest geographical databases modality are often of high reliability and provides data on things like landmarks, shops and other points of interest. Interesting sources for such data could be OpenStreetMap Overpass API\cite{overpass} and Geonames\cite{geonames}. 
 
 Aerial images covering the earth has been knit together into great interactive services such as Google Earth\cite{google-earth}. This kind of imagery can cover large areas and are good at visualizing larger areas of land. 
 
-Unstructured geo-referenced web resources could come from websites, news, blogs, wikis or social networks. This is a very diverse modality where data could belong to any number of different modalities. A great strength of this modality however how diverse is presenting live information on events or major happenings. Data is often provided by non-experts and could come in tremendous volumes, this is certainly the fact for social networks; Hence, data in this modality could be noisy and lack of objectivity. Therefore, heavy pre-processing is often required to present reasonable results. Some major resources here are Twitter\cite{twitter} and Facebook\cite{facebook}. 
+Unstructured geo-referenced web resources could come from websites, news, blogs, wikis or social networks. This is a very diverse modality where data could belong to any number of different modalities. A great strength of this modality however how diverse is presenting live information on events or major happenings. Data is often provided by non-experts and could come in tremendous volumes, this is certainly the fact for social networks. Hence, data in this modality could be noisy and lack of objectivity. Therefore, heavy pre-processing is often required to present reasonable results. Some major resources here are Twitter\cite{twitter} and Facebook\cite{facebook}. 
 
-Treating geo-refenced multimedia as collections as opposed to single pieces. There have specially been done a lot of work on geo-referenced images. Images on large photo-sharing services include metadata such as tags, likes and comments; Data mining techniques can therefore be applied to aggregate interesting information on locations and areas.
+Treating geo-refenced multimedia as collections as opposed to single pieces makes it possible to find more relevant information by means of aggregation. There have specially been done a lot of aggregation on geo-referenced images. Images on large photo-sharing services include metadata such as tags, likes and comments; data mining techniques can therefore be applied to aggregate interesting information on locations and areas.
 
 Spyrou and Mylonas\cite{placing-meta-on-map}, and Kisilevich et al\cite{next-vacation} worked with the geo-referenced multimedia as collection modality. A image source they used was for example Flickr\cite{flickr}. Spyrou and Mylonas' work focused on finding the most relevant tags for an area represented by a cluster of images. Tags are usually user-created and therefore of varying quality, in their work they proposed a tag-ranking model that would find the most descriptive tags for a given area. Kisilevich et al's work on the other hand focused on locating and visualizing what they referred to as attractive places. They located areas by image-clusters before applying methods of analyzing their attractiveness. Among their techniques to find the best places they considered the popularity of the pictures in a cluster.
 
 Chippendale et al\cite{collective-photography} worked cross modalities, what they did was showing ways to explore and organize photos. Two of the more interesting things they present in their work are augmenting photos with any other form of geo-tagged data and photo alignment. In augmenting photos they added markers as form of an icon representing the source. Sources could be anything geo-tagged such as news, other photos or videos. In one example they had a picture overlooking a valley which had been augmented with YouTube icons on different locations in the valley. Each Icon indicated a position where a YouTube video was geo-tagged. To help show the position of the YouTube video in the image, the icons representing each video had different sizes according to the distance from where original image was taken.
 
 \section{Design}
-Our task is to enrich an already existing system\cite{originalsystem} with geo-tagged multimedia. The existing system, as seen in figure~\ref{original-app}, visualizes geo-tagged video according to position rather than time. It works by users uploading geo-tagged video. By geo-tagged in this specific context it means that the video is accompanied with location data, the location data tells which location the camera is at throughout the video. In the web application videos can then be navigated by a map, where the tracks of each video is visualized.
+Our task is to enrich an already existing system\cite{originalsystem} with geo-tagged multimedia. The existing system, as seen in figure~\ref{original-app}, visualizes geo-tagged video according to position rather than time. It works by users uploading geo-tagged video. By geo-tagged in this specific context it means that the video is accompanied with location data, the location data tells which location the camera is at throughout the video. In the web application, videos can then be navigated by a map where the tracks of each video is visualized.
 
-        \begin{figure}[htb]
+        \begin{figure*}[htb]
          \centering
-%         \includegraphics[width=200px]{apcp_small}
+	 \includegraphics[width=400px]{app_small}
          \caption{Screenshot of original application. Retrieved from \cite{originalsystem}.}
          \label{original-app}
-        \end{figure}
+        \end{figure*}
 
 We have two main goals we want to achieve with our design. First, visualize points of interest on the map. There should be ways to find relevant information on a point of interest in the application. Secondly, the points of interest should show up on the videos. Such that when a video-clip passes a certain building which is marked as a point of interest a label indicating what point of interest the given building is. 
 
@@ -671,7 +673,7 @@ In the video, the same POIs as in the map should be visualized when they are in 
 
 The given existing application uses OpenStreetMap (OSM) to visualize available tracks and the current position on the video. It suggests itself to use the available OSM API but according to its documentation, the API is dedicated for editing and not for downloading \cite{osmdata}. Mass requests tend to be resource intensive and since we want to respect this appeal, we use the suggested Overpass API to query for our POI.
 
-The Overpass API supports different Query languages like an XML query format and an own, more concise, query language \cite{overpass-lang}. We recommend to build the queries in the XML format since it is more human readable. The resulting query can be transformed into a concise Overpass query using the given converter. The benefit of using the Overpass query is that it can be performed through a single HTTP request to the interpreter. However, one should pay attention to the number of semicolons at the end of the query as we discovered a little bug due to this work.
+The Overpass API supports different Query languages like an XML query format and an own, more concise, query language \cite{overpass-lang}. We choose to build our queries in the XML format since it is more human readable. The resulting query can be transformed into a concise Overpass query using the given converter. The benefit of using the Overpass query is that it can be performed through a single HTTP request to the interpreter. However, one should pay attention to the number of semicolons at the end of the query as we discovered a little bug due to this work.
 
 Since OSM represents everything with nodes and each node has to be defined by a key-value-pair \cite{osmfeature}, we query for our POI with these key-value-pairs according to a certain radius to our current position. 
 The current position is provided by the system with the method call and is needed to build a little bounding box to get the node of the current position from Overpass. Since the box is formed by only two coordinates, it represents the actual point we are looking for. Listing~\ref{lst:xmlquery} and Listing~\ref{lst:overpassquery} show the used query in the current project in XML format as well as in Overpass Query Language.
@@ -692,7 +694,7 @@ The current position is provided by the system with the method call and is neede
 \end{lstlisting}
 
 
-The query from Listing~\ref{lst:xmlquery} retrieves nodes with the key ``historic'' and every belonging value (e.g.: monuments, memorials, ruins or shrines) that are around a thousand meters from the Marketplace (G1) in Mannheim. The result will be delivered as a JSON object which will be passed on to other methods in the system that take care of displaying or getting further information. This query represents just a proof of concept but can be easily extended by appending further <query>-tags like in Listing~\ref{lst:xmlquery2}. This query will have the same result as it would be concatenated with an OR-operator. Adding more elements, which can be considered as arguments in this case, into the same <query>-tag will have the same result as an AND-operator.
+The query from Listing~\ref{lst:xmlquery} retrieves nodes with the key ``historic'' and every belonging value (e.g.: monuments, memorials, ruins or shrines) that are around a thousand meters from the Marketplace (G1) in Mannheim. The result will be delivered as a JSON object which will be passed on to other methods in the system that take care of displaying or getting further information. This query represents just a proof of concept but can be easily extended by appending further \textless query\textgreater-tags like in Listing~\ref{lst:xmlquery2}. This query will have the same result as it would be concatenated with an OR-operator. Adding more elements, which can be considered as arguments in this case, into the same \textless query\textgreater-tag will have the same result as an AND-operator.
 
 The Overpass API offers much more possibilities like membership relations between nodes, regular expressions within key-value pairs and unions between queries. Since we consider the explained functions as sufficient to get all interesting geographical points near a given position, we will not go into detail with these sophisticated functions as this is not an introduction to the Overpass API.
 
@@ -806,7 +808,7 @@ abs(current.lat - place.lat) \leq r
 
 \paragraph{Getting the places in front of us}
 
-As seen on Figure~\ref{filtering}, we will know the coordinates of the current point and the point we are about to reach. What we want to count are points A, B, C and D. If we can calculate the positions of these points, we will be able to say that the object is in front of us, if it's located withing this rectangle.
+As seen on Figure~\ref{filtering}, we will know the coordinates of the current point and the point we are about to reach. What we want to count are points A, B, C and D. If we can calculate the positions of these points, we will be able to say that the object is in front of us, if it's located within this rectangle.
 
 We will be also able to say whether an object is located on the right side of the video or the left side of the video, depending on which of the areas of the rectangle contains the object. We will be also able to return the distance from the object, which can be useful while rendering the object on the video.
 
@@ -874,7 +876,11 @@ Our assumption is that this system will be used mostly in streets so specifying 
 \section{Evaluation}
 
 \subsection{Historical locations marked on the map}
-For our evaluation our POI finder was only configured to find historical locations. Every POI found inside a preset radius of our location was displayed neatly on the map with markers. Intuitively, as seen from other interactive map services like Google Maps~\cite{google-maps}, clicking the marker would show whatever information we had gathered about the location in a popup. A problem we encountered however was that at some locations there could be several POIs in very close proximity or on eachother. Solving how to visualize all the different POIs is something that should be examined in further work. The information we gathered about a location for this evaluation was only the Wikipedia entry found by querying the name of the POI. As the system was configured to only show one popup at the time, the screen never became cluttered with popups. A popup could easily be closed by a close button in the top right corner, indicated by a red x-icon.
+For our evaluation our POI finder was only configured to find historical locations. Every POI found inside a preset radius of our location was displayed neatly on the map with markers. Intuitively, as seen from other interactive map services like Google Maps~\cite{google-maps}, clicking the marker would show whatever information we have gathered about the location in a popup. 
+
+A problem we encountered however was that at some locations there could be several POIs in very close proximity or on each other. Solving how to visualize all the different POIs is something that should be examined in further work. 
+
+The information we gathered about a location for this evaluation was only the Wikipedia entry found by querying the name of the POI. As the system was configured to only show one popup at the time, the screen never became cluttered with popups. A popup could easily be closed by a close button in the top right corner, indicated by a red x-icon.
 
 \subsection{Language issues on historical locations}
 
@@ -886,7 +892,8 @@ For our evaluation our POI finder was only configured to find historical locatio
         \end{figure}
 
 
-We tested our system with videos from Mannheim in Germany. When querying for historical points of interest from Overpass\cite{overpass} our result set consisted of only german names for places. When displaying information in popups on the map we combine the name from points of interest with text retrieved from Wikipedia API\cite{wikiapi}. Wikipedia was queried by using the name of the point of interest. Figure~\ref{popup_with_content} show a popup where english Wikipedia content was found. As the names of the points of interest where in german and we query the english Wikipedia we rarely got any hits. Figure~\ref{popup_with_content} was actually one of the very few points of interest with english wikipedia content. Figure~\ref{popup_wo_content} displays a popup where there was not found any Wikipedia information.
+We tested our system with videos from Mannheim in Germany. When querying for historical points of interest from Overpass\cite{overpass} our result set consisted of only german names for places. When displaying information in popups on the map we combine the name from points of interest with text retrieved from Wikipedia API\cite{wikiapi}. Wikipedia was queried by using the name of the point of interest. Figure~\ref{popup_with_content} show a popup where english Wikipedia content was found. 
+As the names of the points of interest where in german and we query the english Wikipedia we rarely got any hits. Figure~\ref{popup_with_content} was actually one of the very few points of interest with english wikipedia content. Figure~\ref{popup_wo_content} displays a popup where there was not found any Wikipedia information.
 
         \begin{figure}[htb]
          \centering
@@ -916,11 +923,14 @@ For the evaluation of displaying content above the video, we used the historical
 
 	In case of more venues are visible on the video, we are notified with several alerts above the video layer on both sides.
 
-\subsection{Lack of images}
-
-
 \section{Conclusion}
-The conclusion goes here.
+We have in this work enriched an existing interactive geo-location video tour application. 
+
+We find exiting places in an area before we find additional information on this location. Our implementation for finding additional information is made in such a way that extending the system with further data sources should be tricial. 
+
+Information and location of the interesting locations can be viewed from the map. Additionally, points of interest are marked in the geo-tagged videos as well. When a video-tour passes a point of interest, this is indicated in the video.
+
+This application really reveals the power of geo-tagged information; as wikipedia information seamlessly is intertwined with geo-tagged videos into one simple to use interactive application. As the system is easy extendable for more sources of information, one can only start imagining how this could be extended with further imagery, YouTube\cite{youtube} videos and live social media content.
 
 
 
@@ -941,21 +951,21 @@ The conclusion goes here.
 %
 
 
-\appendices
-\section{Proof of the First Zonklar Equation}
-Appendix one text goes here.
+%\appendices
+%\section{Proof of the First Zonklar Equation}
+%Appendix one text goes here.
 
 % you can choose not to have a title for an appendix
 % if you want by leaving the argument blank
-\section{}
-Appendix two text goes here.
+%\section{}
+%Appendix two text goes here.
 
 
 % use section* for acknowledgement
-\section*{Acknowledgment}
+%\section*{Acknowledgment}
 
 
-The authors would like to thank...
+%The authors would like to thank...
 
 
 % Can use something like this to put references on a page
@@ -992,47 +1002,17 @@ The authors would like to thank...
 
 \begin{thebibliography}{1}
 
-\bibitem{osmdata}
-(2013, Apr.) OpenStreetMap wiki about how to download data. [Online]. Available: \url{http://wiki.openstreetmap.org/wiki/Getting_Data}
-
-\bibitem{osmfeature}
-(2013, Apr.) OpenStreetMap wiki about the tagging system. [Online]. Available: \url{http://wiki.openstreetmap.org/wiki/Map_Features}
-
-\bibitem{overpass-lang}
-(2013, Apr.) Overpass API language guide. [Online]. Available: \url{http://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide}
-
-\bibitem{flickr}
-(2013, Apr.) Flickr. \url{http://www.flickr.com/}
-
-\bibitem{youtube}
-(2013, Apr.) YouTube. \url{http://www.youtube.com/}
-
-\bibitem{foursquare}
-(2013, Apr.) Foursqaure. \url{http://www.foursquare.com/}
+\bibitem{geotagging-survey}
+Luo, J., Joshi, D., Yu, J., and Gallagher, A. (2011). Geotagging in multimedia and computer vision?a survey. Multimedia Tools and Applications, 51(1), 187-211.
 
 \bibitem{overpass}
 (2013, Apr.) OpenStreetMap Overpass API. \url{http://wiki.openstreetmap.org/wiki/Overpass_API}
 
-\bibitem{placing-meta-on-map}
-Spyrou, E., and Mylonas, P. (2011, December). Placing User-Generated Photo Metadata on a Map. In Semantic Media Adaptation and Personalization (SMAP), 2011 Sixth International Workshop on (pp. 79-84). IEEE.
-
-\bibitem{geotagging-survey}
-Luo, J., Joshi, D., Yu, J., and Gallagher, A. (2011). Geotagging in multimedia and computer vision?a survey. Multimedia Tools and Applications, 51(1), 187-211.
-
 \bibitem{geonames}
 (2013, Apr.) Geonames. \url{http://www.geonames.org/}
 
-\bibitem{next-vacation}
-Kisilevich, S., Mansmann, F., Bak, P., Keim, D., and Tchaikin, A. (2010, February). Where would you go on your next vacation? A framework for visual exploration of attractive places. In Advanced Geographic Information Systems, Applications, and Services (GEOPROCESSING), 2010 Second International Conference on (pp. 21-26). IEEE.
-
-\bibitem{collective-photography}
-Chippendale, P., Zanin, M., and Andreatta, C. (2009, November). Collective photography. In Visual Media Production, 2009. CVMP'09. Conference for (pp. 188-194). IEEE.
-
 \bibitem{google-earth}
 (2013, Apr.) Google Earth. \url{http://www.google.com/earth/index.html}
-
-\bibitem{google-maps}
-(2013, Apr.) Google Maps. \url{http://maps.google.com/}
 
 \bibitem{twitter}
 (2013, Apr.) Twitter. \url{http://www.twitter.com}
@@ -1040,12 +1020,38 @@ Chippendale, P., Zanin, M., and Andreatta, C. (2009, November). Collective photo
 \bibitem{facebook}
 (2013, Apr.) Facebook. \url{http://www.facebook.com}
 
+\bibitem{placing-meta-on-map}
+Spyrou, E., and Mylonas, P. (2011, December). Placing User-Generated Photo Metadata on a Map. In Semantic Media Adaptation and Personalization (SMAP), 2011 Sixth International Workshop on (pp. 79-84). IEEE.
+
+\bibitem{next-vacation}
+Kisilevich, S., Mansmann, F., Bak, P., Keim, D., and Tchaikin, A. (2010, February). Where would you go on your next vacation? A framework for visual exploration of attractive places. In Advanced Geographic Information Systems, Applications, and Services (GEOPROCESSING), 2010 Second International Conference on (pp. 21-26). IEEE.
+
+\bibitem{flickr}
+(2013, Apr.) Flickr. \url{http://www.flickr.com/}
+
+\bibitem{collective-photography}
+Chippendale, P., Zanin, M., and Andreatta, C. (2009, November). Collective photography. In Visual Media Production, 2009. CVMP'09. Conference for (pp. 188-194). IEEE.
+
 \bibitem{originalsystem}
-http://ls.wim.uni-mannheim.de/de/pi4/research/projects/geotagged-videos
+(2013, Apr.) \url{http://ls.wim.uni-mannheim.de/de/pi4/research/projects/geotagged-videos}
+
+\bibitem{osmdata}
+(2013, Apr.) OpenStreetMap wiki about how to download data. [Online]. Available: \url{http://wiki.openstreetmap.org/wiki/Getting_Data}
+
+\bibitem{overpass-lang}
+(2013, Apr.) Overpass API language guide. [Online]. Available: \url{http://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide}
+
+\bibitem{osmfeature}
+(2013, Apr.) OpenStreetMap wiki about the tagging system. [Online]. Available: \url{http://wiki.openstreetmap.org/wiki/Map_Features}
+
+\bibitem{google-maps}
+(2013, Apr.) Google Maps. \url{http://maps.google.com/}
 
 \bibitem{wikiapi}
+(2013, Apr.) Wikipedia API. \url{http://www.mediawiki.org/wiki/API:Main_page}
 
-
+\bibitem{youtube}
+(2013, Apr.) YouTube. \url{http://www.youtube.com/}
 
 \end{thebibliography}
 
