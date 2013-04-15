@@ -892,8 +892,7 @@ The information we gathered about a location for this evaluation was only the Wi
         \end{figure}
 
 
-We tested our system with videos from Mannheim in Germany. When querying for historical points of interest from Overpass\cite{overpass} our result set consisted of only german names for places. When displaying information in popups on the map we combine the name from points of interest with text retrieved from Wikipedia API\cite{wikiapi}. Wikipedia was queried by using the name of the point of interest. Figure~\ref{popup_with_content} show a popup where english Wikipedia content was found. 
-As the names of the points of interest where in german and we query the english Wikipedia we rarely got any hits. Figure~\ref{popup_with_content} was actually one of the very few points of interest with english wikipedia content. Figure~\ref{popup_wo_content} displays a popup where there was not found any Wikipedia information.
+We tested our system with videos from Mannheim in Germany. When querying for historical points of interest from Overpass\cite{overpass} our result set consisted of only german names for places. When displaying information in popups on the map we combine the name from points of interest with text retrieved from Wikipedia API\cite{wikiapi}. Wikipedia was queried by using the name of the point of interest. Figure~\ref{popup_with_content} show a popup where english Wikipedia content was found. Figure~\ref{popup_wo_content} displays a popup where there was not found any Wikipedia information.
 
         \begin{figure}[htb]
          \centering
@@ -913,7 +912,7 @@ For the evaluation of displaying content above the video, we used the historical
          \label{video_with_info}
         \end{figure}
 
-	In the scenario visible in Figure~\ref{video_with_info}, there are several routes where we could find historical locations on our way. We choosed all the possible routes from this scenario and we found out that we are notified with the relevant alert above the video layer in case interesting venue is nearby.
+	In the scenario visible in Figure~\ref{popup_wo_content}, there are several routes where we could find historical locations on our way. We choosed all the possible routes from this scenario and we found out that we are notified with the relevant alert above the video layer in case interesting venue is nearby.
 
 	In addition, the location of the venue is estimated using the hint whether the object is located on the right or the left side of the street.
 	
@@ -926,15 +925,41 @@ For the evaluation of displaying content above the video, we used the historical
 \section{Conclusion}
 We have in this work enriched an existing interactive geo-location video tour application. 
 
-We find exiting places in an area before we find additional information on this location. Our implementation for finding additional information is made in such a way that extending the system with further data sources should be tricial. 
+We find exiting places in an area before we find additional information on this location. Our implementation for finding additional information is made in such a way that extending the system with further data sources should be trivial. 
 
 Information and location of the interesting locations can be viewed from the map. Additionally, points of interest are marked in the geo-tagged videos as well. When a video-tour passes a point of interest, this is indicated in the video.
 
 This application really reveals the power of geo-tagged information; as wikipedia information seamlessly is intertwined with geo-tagged videos into one simple to use interactive application. As the system is easy extendable for more sources of information, one can only start imagining how this could be extended with further imagery, YouTube\cite{youtube} videos and live social media content.
 
+\section{Attribution of work}
 
+\paragraph{J\'{a}n~Vor\u{c}\'{a}k}
 
+\begin{itemize}
+\item fetching information about objects from external sources
+\item video objects visibility calculations
+\item visualizing fetched data in the HTML5 video
+\item evaluation
+\end{itemize}
 
+\paragraph{Frode~Tobias~Bjerke}
+
+\begin{itemize}
+\item related work
+\item design
+\item evaluation
+\item conclusion
+\item display data on map
+\end{itemize}
+
+\paragraph{Matth\"{a}us~Skiba}
+\begin{itemize}
+\item get POI from OpenStreetMap/Overpass API
+\item draw markers on map with Openlayers API
+\item set popups with additional information
+\item write about the functions above
+\item write abstract and introduction
+\end{itemize}
 
 % if have a single appendix:
 %\appendix[Proof of the Zonklar Equations]
